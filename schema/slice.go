@@ -1,12 +1,15 @@
 package schema
 
-import "fmt"
+import (
+	"fmt"
+	"slices"
+)
 
-type sliceSchema[T any] struct {
+type sliceSchema[T comparable] struct {
 	baseSchema[[]T]
 }
 
-func Slice[T any]() *sliceSchema[T] {
+func Slice[T comparable]() *sliceSchema[T] {
 	return &sliceSchema[T]{
 		baseSchema: newBaseSchema[[]T](),
 	}
@@ -28,6 +31,18 @@ func (ss *sliceSchema[T]) MaxLength(maxLen int) *sliceSchema[T] {
 	ss.appendValidator(func(a []T) error {
 		if len(a) > maxLen {
 			return fmt.Errorf("required max length: %v", maxLen)
+		}
+
+		return nil
+	})
+
+	return ss
+}
+
+func (ss *sliceSchema[T]) Contains(target T) *sliceSchema[T] {
+	ss.appendValidator(func(t []T) error {
+		if !slices.Contains(t, target) {
+			return fmt.Errorf("slice must contain value: %v", target)
 		}
 
 		return nil
