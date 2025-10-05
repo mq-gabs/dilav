@@ -42,3 +42,53 @@ func Test_Struct(t *testing.T) {
 	assert.Nil(t, err1)
 	assert.NotNil(t, err2)
 }
+
+type Group struct {
+	name   string
+	member *User
+}
+
+func (g Group) SchemaJSON() map[string]any {
+	return map[string]any{
+		"name":   g.name,
+		"member": g.member,
+	}
+}
+
+func Test_StructInsideStruct(t *testing.T) {
+	u := User{
+		name: "Bob Smith",
+		age:  23,
+	}
+
+	g := Group{
+		name:   "Worker",
+		member: &u,
+	}
+
+	validUserSchema := Struct(map[string]Schema[any]{
+		"name": String().MaxLength(32),
+		"age":  Number().Min(18),
+	})
+	invalidUserSchema := Struct(map[string]Schema[any]{
+		"name": String().MinLength(32),
+		"age":  Number().Max(21),
+	})
+
+	validSchema := Struct(map[string]Schema[any]{
+		"name":   String().MaxLength(12),
+		"member": validUserSchema,
+	})
+	invalidSchema := Struct(map[string]Schema[any]{
+		"name":   String().MaxLength(4),
+		"member": invalidUserSchema,
+	})
+
+	err1 := validSchema.Validate(g)
+	t.Log(err1)
+	err2 := invalidSchema.Validate(g)
+	t.Log(err2)
+
+	assert.Nil(t, err1)
+	assert.NotNil(t, err2)
+}

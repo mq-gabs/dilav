@@ -17,8 +17,13 @@ func Struct(fields map[string]Schema[any]) *structSchema {
 	}
 }
 
-func (ss *structSchema) Validate(structValue SchemaJSONMarshaler) error {
-	json := structValue.SchemaJSON()
+func (ss *structSchema) Validate(structValue any) error {
+	structValueTyped, ok := structValue.(SchemaJSONMarshaler)
+	if !ok {
+		return errors.New("struct must implement SchemaJSON")
+	}
+
+	json := structValueTyped.SchemaJSON()
 
 	var err error
 	for key, value := range json {
