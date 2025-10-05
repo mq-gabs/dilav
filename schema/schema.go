@@ -7,7 +7,7 @@ import (
 type Validator[T any] func(T) error
 
 type Schema[T any] interface {
-	Validate(T) error
+	Validate(any) error
 }
 
 var initialValidate = func() error {
@@ -22,14 +22,19 @@ func newBaseSchema[T any]() baseSchema[T] {
 	return baseSchema[T]{}
 }
 
-func (bs *baseSchema[T]) Validate(value T) error {
+func (bs *baseSchema[T]) Validate(value any) error {
+	typedValue, ok := value.(T)
+	if !ok {
+		return errors.New("invalid type")
+	}
+
 	if len(bs.validators) == 0 {
 		initialValidate()
 	}
 
 	var err error
 	for _, valid := range bs.validators {
-		e := valid(value)
+		e := valid(typedValue)
 		if e != nil {
 			err = errors.Join(err, e)
 		}
