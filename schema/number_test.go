@@ -6,11 +6,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_Int(t *testing.T) {
+func Test_Number(t *testing.T) {
 	n := 10
 
-	validSchema := Int().Max(10).NonZero()
-	invalidSchema := Int().NonZero().Negative()
+	validSchema := Number().Max(10).NonZero()
+	invalidSchema := Number().NonZero().Negative()
 
 	err1 := validSchema.Validate(n)
 	t.Log(err1)

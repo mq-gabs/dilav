@@ -5,17 +5,17 @@ import (
 	"fmt"
 )
 
-type intSchema struct {
+type numberSchema struct {
 	baseSchema[int]
 }
 
-func Int() *intSchema {
-	return &intSchema{
+func Number() *numberSchema {
+	return &numberSchema{
 		baseSchema: newBaseSchema[int](),
 	}
 }
 
-func (is *intSchema) Min(min int) *intSchema {
+func (is *numberSchema) Min(min int) *numberSchema {
 	is.appendValidator(func(i int) error {
 		if i < min {
 			return fmt.Errorf("required min value: %v", min)
@@ -27,7 +27,7 @@ func (is *intSchema) Min(min int) *intSchema {
 	return is
 }
 
-func (is *intSchema) Max(max int) *intSchema {
+func (is *numberSchema) Max(max int) *numberSchema {
 	is.appendValidator(func(i int) error {
 		if i > max {
 			return fmt.Errorf("required max value: %v", i)
@@ -39,7 +39,7 @@ func (is *intSchema) Max(max int) *intSchema {
 	return is
 }
 
-func (is *intSchema) Equals(target int) *intSchema {
+func (is *numberSchema) Equals(target int) *numberSchema {
 	is.appendValidator(func(i int) error {
 		if i != target {
 			return fmt.Errorf("value must be equal to: %v", target)
@@ -51,7 +51,7 @@ func (is *intSchema) Equals(target int) *intSchema {
 	return is
 }
 
-func (is *intSchema) NonZero() *intSchema {
+func (is *numberSchema) NonZero() *numberSchema {
 	is.appendValidator(func(i int) error {
 		if i == 0 {
 			return errors.New("value must be non zero")
@@ -63,7 +63,7 @@ func (is *intSchema) NonZero() *intSchema {
 	return is
 }
 
-func (is *intSchema) Positive() *intSchema {
+func (is *numberSchema) Positive() *numberSchema {
 	is.appendValidator(func(i int) error {
 		if i < 0 {
 			return errors.New("value must be positive")
@@ -75,7 +75,7 @@ func (is *intSchema) Positive() *intSchema {
 	return is
 }
 
-func (is *intSchema) Negative() *intSchema {
+func (is *numberSchema) Negative() *numberSchema {
 	is.appendValidator(func(i int) error {
 		if i > 0 {
 			return errors.New("value must be negative")

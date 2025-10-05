@@ -27,11 +27,11 @@ func Test_Struct(t *testing.T) {
 
 	validSchema := Struct(map[string]Schema[any]{
 		"name": String().MinLength(4).MaxLength(32),
-		"age":  Int().Max(44),
+		"age":  Number().Max(44),
 	})
 	invalidSchema := Struct(map[string]Schema[any]{
 		"name": String().MaxLength(4),
-		"age":  Int().Min(44),
+		"age":  Number().Min(44),
 	})
 
 	err1 := validSchema.Validate(u)
