@@ -1,7 +1,15 @@
 package schema
 
 import (
+	"errors"
 	"fmt"
+	"regexp"
+)
+
+var (
+	regexEmail = regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$`)
+	regexUUID  = regexp.MustCompile(`^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-5][a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$`)
+	regexURL   = regexp.MustCompile(`^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$`)
 )
 
 type stringSchema struct {
@@ -36,6 +44,42 @@ func (ss *stringSchema) MaxLength(maxSize int) *stringSchema {
 	ss.appendValidator(func(value string) error {
 		if len(value) > maxSize {
 			return fmt.Errorf("required max length: %v", maxSize)
+		}
+
+		return nil
+	})
+
+	return ss
+}
+
+func (ss *stringSchema) UUID() *stringSchema {
+	ss.appendValidator(func(s string) error {
+		if !regexUUID.MatchString(s) {
+			return errors.New("must be valid UUID")
+		}
+
+		return nil
+	})
+
+	return ss
+}
+
+func (ss *stringSchema) Email() *stringSchema {
+	ss.appendValidator(func(s string) error {
+		if !regexEmail.MatchString(s) {
+			return errors.New("must be valid email")
+		}
+
+		return nil
+	})
+
+	return ss
+}
+
+func (ss *stringSchema) URL() *stringSchema {
+	ss.appendValidator(func(s string) error {
+		if !regexURL.MatchString(s) {
+			return errors.New("must be valid URL")
 		}
 
 		return nil
