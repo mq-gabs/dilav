@@ -15,6 +15,10 @@ func Number() *numberSchema {
 	}
 }
 
+func (ns *numberSchema) Custom(fn Validator[int]) {
+	ns.appendValidator(fn)
+}
+
 func (is *numberSchema) Min(min int) *numberSchema {
 	is.appendValidator(func(i int) error {
 		if i < min {

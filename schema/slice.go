@@ -15,6 +15,10 @@ func Slice[T comparable]() *sliceSchema[T] {
 	}
 }
 
+func (ss *sliceSchema[T]) Custom(fn Validator[[]T]) {
+	ss.appendValidator(fn)
+}
+
 func (ss *sliceSchema[T]) MinLength(minLen int) *sliceSchema[T] {
 	ss.appendValidator(func(a []T) error {
 		if len(a) < minLen {

@@ -14,6 +14,10 @@ func String() *stringSchema {
 	}
 }
 
+func (ss *stringSchema) Custom(fn Validator[string]) {
+	ss.appendValidator(fn)
+}
+
 func (ss *stringSchema) MinLength(minSize int) *stringSchema {
 	ss.appendValidator(func(value string) error {
 		if len(value) < minSize {
