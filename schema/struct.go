@@ -9,25 +9,25 @@ type SchemaStructType interface {
 	SchemaJSON() map[string]any
 }
 
-type structSchema[T SchemaStructType] struct {
+type SchemaStruct[T SchemaStructType] struct {
 	baseSchema[T]
 	schemas map[string]Schema[any]
 }
 
-func Struct[T SchemaStructType]() *structSchema[T] {
-	return &structSchema[T]{
+func Struct[T SchemaStructType]() *SchemaStruct[T] {
+	return &SchemaStruct[T]{
 		baseSchema: newBaseSchema[T](),
 		schemas:    make(map[string]Schema[any]),
 	}
 }
 
-func (ss *structSchema[T]) Field(key string, schema Schema[any]) *structSchema[T] {
+func (ss *SchemaStruct[T]) Field(key string, schema Schema[any]) *SchemaStruct[T] {
 	ss.schemas[key] = schema
 
 	return ss
 }
 
-func (ss *structSchema[T]) Validate(structValue any) error {
+func (ss *SchemaStruct[T]) Validate(structValue any) error {
 	structValueTyped, ok := structValue.(SchemaStructType)
 	if !ok {
 		return errors.New("struct must implement SchemaJSON")

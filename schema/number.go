@@ -11,23 +11,23 @@ type NumberType interface {
 		~float32 | ~float64
 }
 
-type numberSchema[T NumberType] struct {
+type SchemaNumber[T NumberType] struct {
 	baseSchema[T]
 }
 
-func Number[T NumberType]() *numberSchema[T] {
-	return &numberSchema[T]{
+func Number[T NumberType]() *SchemaNumber[T] {
+	return &SchemaNumber[T]{
 		baseSchema: newBaseSchema[T](),
 	}
 }
 
-func (ns *numberSchema[T]) Custom(fn Validator[T]) *numberSchema[T] {
+func (ns *SchemaNumber[T]) Custom(fn Validator[T]) *SchemaNumber[T] {
 	ns.appendValidator(fn)
 
 	return ns
 }
 
-func (ns *numberSchema[T]) Min(min T) *numberSchema[T] {
+func (ns *SchemaNumber[T]) Min(min T) *SchemaNumber[T] {
 	ns.appendValidator(func(i T) error {
 		if i < min {
 			return fmt.Errorf("required min value: %v", min)
@@ -39,7 +39,7 @@ func (ns *numberSchema[T]) Min(min T) *numberSchema[T] {
 	return ns
 }
 
-func (is *numberSchema[T]) Max(max T) *numberSchema[T] {
+func (is *SchemaNumber[T]) Max(max T) *SchemaNumber[T] {
 	is.appendValidator(func(i T) error {
 		if i > max {
 			return fmt.Errorf("required max value: %v", i)
@@ -51,7 +51,7 @@ func (is *numberSchema[T]) Max(max T) *numberSchema[T] {
 	return is
 }
 
-func (is *numberSchema[T]) Equals(target T) *numberSchema[T] {
+func (is *SchemaNumber[T]) Equals(target T) *SchemaNumber[T] {
 	is.appendValidator(func(i T) error {
 		if i != target {
 			return fmt.Errorf("value must be equal to: %v", target)
@@ -63,7 +63,7 @@ func (is *numberSchema[T]) Equals(target T) *numberSchema[T] {
 	return is
 }
 
-func (is *numberSchema[T]) NonZero() *numberSchema[T] {
+func (is *SchemaNumber[T]) NonZero() *SchemaNumber[T] {
 	is.appendValidator(func(i T) error {
 		if i == 0 {
 			return errors.New("value must be non zero")
@@ -75,7 +75,7 @@ func (is *numberSchema[T]) NonZero() *numberSchema[T] {
 	return is
 }
 
-func (is *numberSchema[T]) Positive() *numberSchema[T] {
+func (is *SchemaNumber[T]) Positive() *SchemaNumber[T] {
 	is.appendValidator(func(i T) error {
 		if i < 0 {
 			return errors.New("value must be positive")
@@ -87,7 +87,7 @@ func (is *numberSchema[T]) Positive() *numberSchema[T] {
 	return is
 }
 
-func (is *numberSchema[T]) Negative() *numberSchema[T] {
+func (is *SchemaNumber[T]) Negative() *SchemaNumber[T] {
 	is.appendValidator(func(i T) error {
 		if i > 0 {
 			return errors.New("value must be negative")

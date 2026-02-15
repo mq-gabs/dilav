@@ -13,23 +13,23 @@ var (
 	regexURL   = regexp.MustCompile(`^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$`)
 )
 
-type stringSchema struct {
+type SchemaString struct {
 	baseSchema[string]
 }
 
-func String() *stringSchema {
-	return &stringSchema{
+func String() *SchemaString {
+	return &SchemaString{
 		baseSchema: newBaseSchema[string](),
 	}
 }
 
-func (ss *stringSchema) Custom(fn Validator[string]) *stringSchema {
+func (ss *SchemaString) Custom(fn Validator[string]) *SchemaString {
 	ss.appendValidator(fn)
 
 	return ss
 }
 
-func (ss *stringSchema) LengthMin(minSize int) *stringSchema {
+func (ss *SchemaString) LengthMin(minSize int) *SchemaString {
 	ss.appendValidator(func(value string) error {
 		if len(value) < minSize {
 			return fmt.Errorf("required min length: %v", minSize)
@@ -41,7 +41,7 @@ func (ss *stringSchema) LengthMin(minSize int) *stringSchema {
 	return ss
 }
 
-func (ss *stringSchema) LengthMax(maxSize int) *stringSchema {
+func (ss *SchemaString) LengthMax(maxSize int) *SchemaString {
 	ss.appendValidator(func(value string) error {
 		if len(value) > maxSize {
 			return fmt.Errorf("required max length: %v", maxSize)
@@ -53,7 +53,7 @@ func (ss *stringSchema) LengthMax(maxSize int) *stringSchema {
 	return ss
 }
 
-func (ss *stringSchema) UUID() *stringSchema {
+func (ss *SchemaString) UUID() *SchemaString {
 	ss.appendValidator(func(s string) error {
 		if !regexUUID.MatchString(s) {
 			return errors.New("must be valid UUID")
@@ -65,7 +65,7 @@ func (ss *stringSchema) UUID() *stringSchema {
 	return ss
 }
 
-func (ss *stringSchema) Email() *stringSchema {
+func (ss *SchemaString) Email() *SchemaString {
 	ss.appendValidator(func(s string) error {
 		if !regexEmail.MatchString(s) {
 			return errors.New("must be valid email")
@@ -77,7 +77,7 @@ func (ss *stringSchema) Email() *stringSchema {
 	return ss
 }
 
-func (ss *stringSchema) URL() *stringSchema {
+func (ss *SchemaString) URL() *SchemaString {
 	ss.appendValidator(func(s string) error {
 		if !regexURL.MatchString(s) {
 			return errors.New("must be valid URL")
@@ -89,7 +89,7 @@ func (ss *stringSchema) URL() *stringSchema {
 	return ss
 }
 
-func (ss *stringSchema) Enum(enum []string) *stringSchema {
+func (ss *SchemaString) Enum(enum []string) *SchemaString {
 	if len(enum) == 0 {
 		ss.appendValidator(func(s string) error {
 			return errors.New("invalid setting, enum must not be empty")

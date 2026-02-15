@@ -5,23 +5,23 @@ import (
 	"fmt"
 )
 
-type mapSchema[T comparable, U any] struct {
+type SchemaMap[T comparable, U any] struct {
 	baseSchema[map[T]U]
 }
 
-func Map[T comparable, U any]() *mapSchema[T, U] {
-	return &mapSchema[T, U]{
+func Map[T comparable, U any]() *SchemaMap[T, U] {
+	return &SchemaMap[T, U]{
 		baseSchema: newBaseSchema[map[T]U](),
 	}
 }
 
-func (ms *mapSchema[T, U]) Custom(fn Validator[map[T]U]) *mapSchema[T, U] {
+func (ms *SchemaMap[T, U]) Custom(fn Validator[map[T]U]) *SchemaMap[T, U] {
 	ms.appendValidator(fn)
 
 	return ms
 }
 
-func (ms *mapSchema[T, U]) LengthMax(max int) *mapSchema[T, U] {
+func (ms *SchemaMap[T, U]) LengthMax(max int) *SchemaMap[T, U] {
 	ms.appendValidator(func(m map[T]U) error {
 		if len(m) > max {
 			return fmt.Errorf("required max length: %v", max)
@@ -33,7 +33,7 @@ func (ms *mapSchema[T, U]) LengthMax(max int) *mapSchema[T, U] {
 	return ms
 }
 
-func (ms *mapSchema[T, U]) LengthMin(min int) *mapSchema[T, U] {
+func (ms *SchemaMap[T, U]) LengthMin(min int) *SchemaMap[T, U] {
 	ms.appendValidator(func(m map[T]U) error {
 		if len(m) < min {
 			return fmt.Errorf("required min length: %v", min)
@@ -45,7 +45,7 @@ func (ms *mapSchema[T, U]) LengthMin(min int) *mapSchema[T, U] {
 	return ms
 }
 
-func (ms *mapSchema[T, U]) Child(schema Schema[U]) *mapSchema[T, U] {
+func (ms *SchemaMap[T, U]) Child(schema Schema[U]) *SchemaMap[T, U] {
 	ms.appendValidator(func(m map[T]U) error {
 		var err error
 		for key, value := range m {
